@@ -1,0 +1,12 @@
+{
+    "company": {
+
+    },
+    "projects": {
+        "test": {
+            "repoUserName": "ChrisChV",
+            "repoName": "test",
+            "apiKey": ""
+        }
+    }
+}

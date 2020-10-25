@@ -1,5 +1,5 @@
 import 'package:args/command_runner.dart';
-import 'package:paulonia_scrum/BuildController.dart';
+import 'package:paulonia_scrum/controllers/BuildController.dart';
 import 'package:paulonia_scrum/ComParser/Options.dart';
 
 class BuildIdCommand extends Command{

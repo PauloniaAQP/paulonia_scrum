@@ -36,4 +36,12 @@ class BuildController{
     Utils.saveDocument(output, document.toXmlString());
   }
 
+  static void des(String fileName){
+    XmlDocument document = Utils.openDocument(fileName);
+    final epics = document.findAllElements(TagNames.EPIC_TAG);
+    final stories = epics.first.findAllElements(TagNames.STORY_TAG);
+    String content = stories.first.getElement(TagNames.DESCRIPTION_TAG).toXmlString(pretty: true);
+    print(Utils.eraseTags(content, TagNames.DESCRIPTION_TAG));
+  }
+
 }
