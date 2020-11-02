@@ -2,10 +2,8 @@ import 'dart:collection';
 
 import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
-import 'package:paulonia_scrum/ComParser/Commands/BuildCommand.dart';
-import 'package:paulonia_scrum/ComParser/Commands/UploadCommand.dart';
-import 'package:paulonia_scrum/ComParser/Options.dart';
-import 'package:paulonia_scrum/utils/constants/NameConstants.dart';
+import 'package:paulonia_scrum/ComParser/Commands/build/BuildCommand.dart';
+import 'package:paulonia_scrum/ComParser/Commands/upload/UploadCommand.dart';
 
 class ComParser{
 

@@ -1,5 +1,6 @@
 import 'package:args/command_runner.dart';
-import 'package:paulonia_scrum/ComParser/Commands/UploadBacklogCommand.dart';
+import 'package:paulonia_scrum/ComParser/Commands/upload/UploadBacklogCommand.dart';
+import 'package:paulonia_scrum/ComParser/Commands/upload/UploadTasksCommand.dart';
 import 'package:paulonia_scrum/ComParser/Options.dart';
 import 'package:paulonia_scrum/utils/constants/NameConstants.dart';
 
@@ -13,6 +14,7 @@ class UploadCommand extends Command{
 
   UploadCommand(){
     addSubcommand(UploadBacklogCommand());
+    addSubcommand(UploadTasksCommand());
     argParser.addOption(
       Options.CONFIG,
       abbr: Options.CONFIG_ABBR,

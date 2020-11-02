@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:paulonia_scrum/utils/constants/ConfigConstants.dart';
 import 'package:paulonia_scrum/utils/exceptions/ConfigException.dart';
 
-class ConfigController{
+class ConfigService{
 
   static Map<String, dynamic> configMap;
 
@@ -16,8 +16,14 @@ class ConfigController{
     configMap = jsonDecode(file.readAsStringSync());
   }
 
+  /// Gets the map of [projectId]
+  static Map<String, dynamic> getProject(String projectId){
+    _verifyProjectConfig(projectId);
+    return configMap[ConfigConstants.PROJECT][projectId];
+  }
+
   /// Verifies if exists [projectId] in the configuration and verifies its correct format
-  static void verifyProjectConfig(String projectId){
+  static void _verifyProjectConfig(String projectId){
     if(!configMap.containsKey(ConfigConstants.PROJECT)){
       throw(ConfigException("Error in the config file: '" +
                           ConfigConstants.PROJECT + "' field is required"));
@@ -39,11 +45,6 @@ class ConfigController{
       throw(ConfigException("Error in the config file: '" + ConfigConstants.API_KEY + 
                             "' field is required in '" + projectId + "'"));
     }
-  }
-
-  /// Gets the map of [projectId]
-  static Map<String, dynamic> getProject(String projectId){
-    return configMap[ConfigConstants.PROJECT][projectId];
   }
 
 }
