@@ -16,11 +16,16 @@ import 'package:xml/xml.dart';
 
 class ScrumService{
 
-  static HashMap<String, EpicModel> _epics;
-  static HashMap<String, StoryModel> _stories;
-  static HashMap<int, StoryModel> _storiesByIssueNumber;
+  /// Number of the actual sprint
+  static int get sprintNumber => _sprintNumber;
+
+  /// List of epics mapped by id
   static HashMap<String, EpicModel> get epics => _epics;
+
+  /// List of stories mapped by id
   static HashMap<String, StoryModel> get stories => _stories;
+
+  /// List of stories mapped by issue number
   static HashMap<int, StoryModel> get storiesByIssueNumber => _storiesByIssueNumber;
 
   /// Load all data about epics, stories and tasks
@@ -62,6 +67,9 @@ class ScrumService{
 
   /// Loads the essencial data from epics, stories and tasks from a XML document
   static void _loadEssencialData(XmlDocument document){
+    var _scrum = document.findElements(TagNames.SCRUM_TAG);
+    String tempNumber = _scrum.first.getAttribute(AttributeNames.SPRINT_ATTRIBUTE);
+    if(tempNumber != null) _sprintNumber = int.parse(tempNumber);
     var __epics = document.findAllElements(TagNames.EPIC_TAG);
     String epicId;
     String storyId;
@@ -150,5 +158,13 @@ class ScrumService{
       }
     }
   }
+
+
+  /// Private Stufs
+
+  static int _sprintNumber;
+  static HashMap<String, EpicModel> _epics;
+  static HashMap<String, StoryModel> _stories;
+  static HashMap<int, StoryModel> _storiesByIssueNumber;
 
 }
