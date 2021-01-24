@@ -23,8 +23,11 @@ class UploadController{
   /// Upload the tasks from the stories in [fileName] into the [projectId] repository
   static Future<void> uploadTasks(
     String fileName,
-    String projectId,
-  ) async{
+    String projectId,{
+    bool linkAndCreateMilestone = true,
+    String milestoneDescription,
+    DateTime milestoneDueOn,
+  }) async{
     Map<String, dynamic> project = ConfigService.getProject(projectId);
     var github = GitHubService.getGitHubInstance(
       project[ConfigConstants.API_KEY]
@@ -39,7 +42,23 @@ class UploadController{
       gitHub: github,
       repositorySlug: repositorySlug
     );
-    return _uploadTasks(projectId, github, repositorySlug , project);
+    Milestone milestone;
+    if(linkAndCreateMilestone && ScrumService.sprintNumber != null){
+      milestone = await GitHubService.createMiliestone(
+        github,
+        repositorySlug,
+        'Sprint ' + ScrumService.sprintNumber.toString(),
+        description: milestoneDescription,
+        dueOn: milestoneDueOn,
+      );
+    }
+    return _uploadTasks(
+      projectId,
+      github,
+      repositorySlug,
+      project,
+      milestone: milestone,
+    );
   }
 
   /// Upload the backlog in the [projectId]
@@ -88,8 +107,9 @@ class UploadController{
     String projectId,
     GitHub github,
     RepositorySlug repositorySlug,
-    Map<String, dynamic> project,
-  ) async{
+    Map<String, dynamic> project, {
+    Milestone milestone,  
+  }) async{
     List<StoryModel> stories = List.from(ScrumService.stories.values);
     HashMap<String, TaskModel> tasksMap = HashMap();
     for(StoryModel story in stories){
@@ -100,6 +120,7 @@ class UploadController{
           projectId,
           task,
           ScrumService.stories[task.storyId].issue.number,
+          milestoneNumber: milestone.number,
         );
         tasksMap[task.id] = task;
       }
@@ -107,7 +128,8 @@ class UploadController{
         story,
         github,
         repositorySlug,
-        story.tasks
+        story.tasks,
+        milestoneNumber: milestone.number,
       );
     }
   }

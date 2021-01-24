@@ -36,10 +36,10 @@ class ContentService{
   /// Replaces the ans [body] of a story and adds the [tasks] with issue references
   static String replaceTaskSectionInStoryContent(String body, List<TaskModel> tasks){
     String content = '';
-    List<String> sections = body.split(ContentConstants.INIT_SECTION_TAG + '\n');
+    List<String> sections = body.split(ContentConstants.INIT_SECTION_TAG);
     String section = '';
     for(int i = 0; i < sections.length; i++){
-      section = sections[i];
+      section = sections[i].trimLeft();
       if(i == 0){
        content += section + ContentConstants.INIT_SECTION_TAG + '\n';
        continue;

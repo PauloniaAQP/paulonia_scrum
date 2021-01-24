@@ -63,40 +63,71 @@ class GitHubService{
   }
 
   /// Creates a task on github in [projectId]
+  /// 
+  /// Set [milestoneNumber] to set a mileston to the created task
   static Future<Issue> createTask(
     GitHub gitHub,
     RepositorySlug repositorySlug,
     String projectId,
     TaskModel task,
     int storyIssueNum, {
-    bool verbose = true,  
+    bool verbose = true,
+    int milestoneNumber,  
   }) async{
+    IssueRequest request = IssueRequest(
+      title: task.title,
+      labels: [projectId, LabelsConstants.TASK],
+      body: ContentService.makeTaskContent(task, storyIssueNum),
+    );
+    if(milestoneNumber != null) request.milestone = milestoneNumber;
     Issue res = await gitHub.issues.create(
       repositorySlug,
-      IssueRequest(
-        title: task.title,
-        labels: [projectId, LabelsConstants.TASK],
-        body: ContentService.makeTaskContent(task, storyIssueNum),
-      ),
+      request,
     );
     if(verbose) print('Created: ' + task.title + ' #' + res.number.toString());
     return res;
   }
 
+  /// Creates a Milestone in the actual project
+  static Future<Milestone> createMiliestone(
+    GitHub gitHub,
+    RepositorySlug repositorySlug,
+    String title, {
+    String description,
+    DateTime dueOn,  
+    bool verbose = true,  
+  }) async{
+    Milestone res = await gitHub.issues.createMilestone(
+      repositorySlug,
+      CreateMilestone(
+        title,
+        description: description,
+        dueOn: dueOn
+      ),
+    );
+    if(verbose) print('Milestone created: ' + title);
+    return res;
+  }
+
   /// Update the tasks section in the Story body
+  /// 
+  /// Set [milestoneNumber] to update the linked milestone ofthe story
   static Future<Issue> updateTasksInStory(
     StoryModel story,
     GitHub gitHub,
     RepositorySlug repositorySlug,
     List<TaskModel> tasks, {
     bool verbose = true,
+    int milestoneNumber,
   }) async {
+    IssueRequest request = IssueRequest(
+      body: ContentService.replaceTaskSectionInStoryContent(story.issue.body, tasks),
+    );
+    if(milestoneNumber != null) request.milestone = milestoneNumber;
     Issue res = await gitHub.issues.edit(
       repositorySlug,
       story.issue.number,
-      IssueRequest(
-        body: ContentService.replaceTaskSectionInStoryContent(story.issue.body, tasks),
-      )
+      request
     );
     if(verbose) print('Updated: ' + story.title + ' #' + res.number.toString());
     return res;

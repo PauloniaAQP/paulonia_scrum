@@ -1,5 +1,6 @@
 class TagNames{
 
+  static const SCRUM_TAG = 'scrum';
   static const EPIC_TAG = 'epic';
   static const STORY_TAG = 'story';
   static const TITLE_TAG = 'title';
